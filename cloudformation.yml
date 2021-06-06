@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'Bezu Alemu / Udacity - Excercise cloud formation scripts'
+Resources:
+  myVPCEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Allow inbound on port 80 and unrestricted outbound
+      GroupName: allow http
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: "vpc-0662d35fdd0e05d95"
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: "t3.micro"
+      ImageId: "ami-0d5eff06f840b45e9"
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet: 
+            - Ref: "myVPCEC2SecurityGroup"
+          SubnetId: "subnet-05a9fb25260903352"
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install -y httpd
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
