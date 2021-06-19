@@ -12,7 +12,31 @@ Parameters:
       Default: 10.0.0.0/16
 
 Resources:
-  
+
+  UdacityS3ReadOnlyEC2:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+
+  ProfileWithRolesForApp: 
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Path: "/"
+      Roles: 
+        - !Ref UdacityS3ReadOnlyEC2 
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -52,21 +76,24 @@ Resources:
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      UserData:
-        Fn::Base64: !Sub |
+      UserData: !Base64 |
           #!/bin/bash
-          sudo apt-get update -y
-          sudo apt-get install apache2 -y
-          sudo systemctl start apache2.service          
+          apt-get update -y
+          apt-get install unzip awscli -y
+          apt-get install apache2 -y
+          systemctl start apache2.service
+          cd /var/www/html
+          aws s3 cp s3://udacity-demo-1/udacity.zip .
+          unzip -o udacity.zip       
       ImageId: ami-0747bdcabd34c712a
-      KeyName: AWS_EC2_Demo
+      IamInstanceProfile: !Ref ProfileWithRolesForApp
       SecurityGroups:
-      - Ref: WebServerSecGroup
+        - Ref: WebServerSecGroup
       InstanceType: t3.medium
       BlockDeviceMappings:
-      - DeviceName: "/dev/sdk"
-        Ebs:
-          VolumeSize: '10'
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: '10'
   
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
