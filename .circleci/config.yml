@@ -1,0 +1,33 @@
+version: 2.1
+executors:
+  my-executor:
+    docker:
+      - image: cimg/node:16.4.0
+
+jobs:
+  save_hello_world_output:
+    executor: my-executor
+    working_directory: /tmp/workspace
+    steps:
+      - run: 
+          command: echo "hello world" > output.txt
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths: 
+            - output.txt
+  
+  print_hello_world:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          command: cat /tmp/workspace/output.txt
+          
+workflows:
+  workflow-1:
+    jobs:
+      - save_hello_world_output
+      - print_hello_world:
+          requires:
+            - save_hello_world_output
