@@ -3,7 +3,7 @@ executors:
   my-executor:
     docker:
       - image: cimg/node:16.4.0
-  working_directory: /tmp/workspace
+working_directory: /tmp/workspace
 
 jobs:
   save_hello_world_output:
