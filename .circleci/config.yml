@@ -3,11 +3,11 @@ executors:
   my-executor:
     docker:
       - image: cimg/node:16.4.0
+  working_directory: /tmp/workspace
 
 jobs:
   save_hello_world_output:
     executor: my-executor
-    working_directory: /tmp/workspace
     steps:
       - run: 
           command: echo "hello world" > output.txt
@@ -22,7 +22,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          command: cat /tmp/workspace/output.txt
+          command: cat output.txt
           
 workflows:
   workflow-1:
