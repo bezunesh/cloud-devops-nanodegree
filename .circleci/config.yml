@@ -1,53 +1,23 @@
 version: 2.1
-commands:
-  print_pipeline_id:
-    description: "A command that prints out the pipeline id"
-    steps:
-      - run: echo "Pipeline id is $CIRCLE_WORKFLOW_ID"
 executors:
   my-executor:
     docker:
-      - image: cimg/node:16.4.0
+      - image: amazon/aws-cli
 
 jobs:
-  print_workflow_id:
+  create_infrastructure:
     executor: my-executor
     steps:
-      - print_pipeline_id
-
-  save_hello_world_output:
-    executor: my-executor
-    working_directory: /tmp/workspace
-    steps:
+      - checkout
       - run: 
-          command: echo "hello world" > output.txt
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths: 
-            - output.txt
-  
-  print_hello_world:
-    executor: my-executor
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          command: cat /tmp/workspace/output.txt
-  a_failing_job:
-    executor: my-executor
-    steps:
-      - run:
-          command: return 1
-      - run:
-          command: echo "Hello Error!"
-          when: on_fail
+          command: |
+            aws cloudformation create-stack \
+              --stack-name my-app \
+              --template-body file://template.yml \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
+              --region=us-east-1
           
 workflows:
   workflow-1:
     jobs:
-      - save_hello_world_output
-      - print_hello_world:
-          requires:
-            - save_hello_world_output
-      - print_workflow_id
-      - a_failing_job
+      - create_infrastructure
