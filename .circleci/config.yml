@@ -13,9 +13,8 @@ jobs:
           command: |
             aws cloudformation deploy \
                 --stack-name network-ex \
-                --template-body file://../projects/project-2/network.yml \
-                --parameters file://../projects/project-2/network-parameters \
-                --region=us-east-1
+                --template-file file://../projects/project-2/network.yml \
+                --parameter-overrides file://../projects/project-2/network-parameters 
   create_servers:
     executor: my-executor
     steps:
@@ -24,9 +23,8 @@ jobs:
           command: |
             aws cloudformation deploy \
                 --stack-name servers-ex \
-                --template-body file://../projects/project-2/LB-and-servers.yml \
-                --parameters file://../projects/project-2/servers-parameters \
-                --region=us-east-1
+                --template-file file://../projects/project-2/LB-and-servers.yml \
+                --parameter-overrides file://../projects/project-2/servers-parameters
           
 workflows:
   workflow-1:
