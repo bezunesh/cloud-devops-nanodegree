@@ -11,11 +11,9 @@ jobs:
       - checkout
       - run: 
           command: |
-            aws cloudformation create-stack \
-              --stack-name my-app \
-              --template-body file://template.yml \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --region=us-east-1
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name my-stack
           
 workflows:
   workflow-1:
