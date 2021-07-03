@@ -14,7 +14,7 @@ jobs:
             aws cloudformation deploy \
                 --stack-name network-ex \
                 --template-file file://projects/project-2/network.yml \
-                --parameter-overrides file://projects/project-2/network-parameters 
+                --parameter-overrides file://projects/project-2/network-parameters.json
   create_servers:
     executor: my-executor
     steps:
@@ -24,7 +24,7 @@ jobs:
             aws cloudformation deploy \
                 --stack-name servers-ex \
                 --template-file file://projects/project-2/LB-and-servers.yml \
-                --parameter-overrides file://projects/project-2/servers-parameters
+                --parameter-overrides file://projects/project-2/servers-parameters.json
           
 workflows:
   workflow-1:
