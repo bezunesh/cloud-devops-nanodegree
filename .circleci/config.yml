@@ -14,6 +14,15 @@ jobs:
             aws cloudformation deploy \
                 --stack-name my-stack \
                 --template-file template.yml \
+  
+  deploy:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          command: |
+            ansible-playbook ansible/main-remote.yml
           
 workflows:
   workflow-1:
