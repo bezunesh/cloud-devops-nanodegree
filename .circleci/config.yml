@@ -18,8 +18,24 @@ jobs:
           name: Configure server
           command: |
             ansible-playbook -i ansible/inventory.txt ansible/playbook.yml
+    
+    smoke_test:
+      docker:
+        - image: alpine:latest
+      steps:
+        - run:
+          command: |
+            if curl -s --head "https://google.com" 
+            then 
+              echo "It worked!" 
+            else
+              echo "It failed"
+            fi
 
 workflows:
   my_workflow:
     jobs:
       - configure_infrastructure
+      - smoke_test:
+          requires:
+            - configure_infrastructure
