@@ -1,33 +1,23 @@
 version: 2.1
-executors:
-  my-executor:
-    docker:
-      - image: amazon/aws-cli
 
 jobs:
-  create_infra:
-    executor: my-executor
-    steps:
-      - checkout
-      - run: 
-          command: |
-            aws cloudformation deploy \
-                --stack-name my-stack \
-                --template-file template.yml \
-  
-  deploy:
+  configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["bc:16:b3:a6:72:c4:98:8d:05:0a:83:11:3b:ac:bd:af"] 
       - run:
+          name: Install dependencies
           command: |
-            ansible-playbook ansible/main-remote.yml
-          
+            apk add --update ansible # install the dependencies needed for your playbook
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i ansible/inventory.txt ansible/playbook.yml
+
 workflows:
-  workflow-1:
+  my_workflow:
     jobs:
-      - create_infra
-      - deploy:
-          requires:
-            - create_infra
+      - configure_infrastructure

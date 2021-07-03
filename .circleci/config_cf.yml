@@ -1,0 +1,33 @@
+version: 2.1
+executors:
+  my-executor:
+    docker:
+      - image: amazon/aws-cli
+
+jobs:
+  create_infra:
+    executor: my-executor
+    steps:
+      - checkout
+      - run: 
+          command: |
+            aws cloudformation deploy \
+                --stack-name my-stack \
+                --template-file template.yml \
+  
+  deploy:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          command: |
+            ansible-playbook ansible/main-remote.yml
+          
+workflows:
+  workflow-1:
+    jobs:
+      - create_infra
+      - deploy:
+          requires:
+            - create_infra
