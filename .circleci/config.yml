@@ -13,7 +13,7 @@ jobs:
           command: |
             aws cloudformation deploy \
                 --stack-name network-ex \
-                --template-file file://network.yml \
+                --template-file network.yml \
                 --parameter-overrides file://network-parameters.json
   create_servers:
     executor: my-executor
