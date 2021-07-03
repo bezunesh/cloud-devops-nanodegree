@@ -23,7 +23,7 @@ jobs:
           command: |
             aws cloudformation deploy \
                 --stack-name servers-ex \
-                --template-file file://LB-and-servers.yml \
+                --template-file LB-and-servers.yml \
                 --parameter-overrides file://servers-parameters.json
           
 workflows:
