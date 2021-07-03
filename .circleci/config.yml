@@ -5,31 +5,17 @@ executors:
       - image: amazon/aws-cli
 
 jobs:
-  create_network:
+  create_infra:
     executor: my-executor
     steps:
       - checkout
       - run: 
           command: |
             aws cloudformation deploy \
-                --stack-name network-ex \
-                --template-file network.yml \
-                --parameter-overrides file://network-parameters.json
-  create_servers:
-    executor: my-executor
-    steps:
-      - checkout
-      - run: 
-          command: |
-            aws cloudformation deploy \
-                --stack-name servers-ex \
-                --template-file LB-and-servers.yml \
-                --parameter-overrides file://servers-parameters.json
+                --stack-name my-stack \
+                --template-file template.yml \
           
 workflows:
   workflow-1:
     jobs:
-      - create_network
-      - create_servers:
-          requires:
-            - create_network
+      - create_infra
