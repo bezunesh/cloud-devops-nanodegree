@@ -9,6 +9,11 @@ Resources:
         - !Ref InstanceSecurityGroup
       KeyName: AWS_EC2_Demo
       ImageId: 'ami-09e67e426f25ce0d7' 
+      InstanceType: t3.medium
+      BlockDeviceMappings:
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: '10'
   
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
