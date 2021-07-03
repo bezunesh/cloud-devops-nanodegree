@@ -1,6 +1,6 @@
 Description: >
   This template deploys an EC2 instance inside the default VPC and opens port 22.
-  
+
 Resources:
   Ec2Instance:
     Type: 'AWS::EC2::Instance'
@@ -8,7 +8,7 @@ Resources:
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       KeyName: AWS_EC2_Demo
-      ImageId: 'ami-0ee02acd56a52998e' 
+      ImageId: 'ami-0ab4d1e9cf9a1215a' 
   
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
