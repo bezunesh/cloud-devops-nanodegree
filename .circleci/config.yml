@@ -5,17 +5,33 @@ executors:
       - image: amazon/aws-cli
 
 jobs:
-  create_infrastructure:
+  create_network:
     executor: my-executor
     steps:
       - checkout
       - run: 
           command: |
             aws cloudformation deploy \
-              --template-file template.yml \
-              --stack-name my-stack
+                --stack-name network-ex \
+                --template-body file://../projects/project-2/network.yml \
+                --parameters file://../projects/project-2/network-parameters \
+                --region=us-east-1
+  create_servers:
+    executor: my-executor
+    steps:
+      - checkout
+      - run: 
+          command: |
+            aws cloudformation deploy \
+                --stack-name servers-ex \
+                --template-body file://../projects/project-2/LB-and-servers.yml \
+                --parameters file://../projects/project-2/servers-parameters \
+                --region=us-east-1
           
 workflows:
   workflow-1:
     jobs:
-      - create_infrastructure
+      - create_network
+      - create_servers:
+          requires:
+            - create_network
