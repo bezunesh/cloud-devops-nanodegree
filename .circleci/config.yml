@@ -28,3 +28,6 @@ workflows:
   workflow-1:
     jobs:
       - create_infra
+      - deploy:
+          requires:
+            - create_infra
