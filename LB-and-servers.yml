@@ -10,7 +10,7 @@ Parameters:
       Description: CIDR IP range for the VPC
       Type: String
       Default: 10.0.0.0/16
-      
+
 Resources:
   Ec2Instance:
     Type: 'AWS::EC2::Instance'
@@ -18,15 +18,12 @@ Resources:
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       KeyName: AWS_EC2_Demo
-      ImageId: ami-0747bdcabd34c712a
+      ImageId: 'ami-0ab4d1e9cf9a1215a' 
   
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable SSH access via port 22
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${EnvironmentName}-VPCID"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
