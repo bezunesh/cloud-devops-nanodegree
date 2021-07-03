@@ -8,6 +8,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["bc:16:b3:a6:72:c4:98:8d:05:0a:83:11:3b:ac:bd:af"] 
+      - run: ssh-keyscan 3.235.239.109 >> ~/.ssh/known_hosts
       - run:
           name: Install dependencies
           command: |
